@@ -7,19 +7,19 @@ import (
 )
 
 func parseFileWithEnable(filename string) [][]int {
-	fullString := ""
+	var builder strings.Builder
 	for l := range common.GetInputLines(filename) {
 		line := l.Text
 		if line == "" {
 			continue
 		}
-		fullString = strings.Join([]string{fullString, line}, "")
+		builder.WriteString(line)
 	}
 	var pairs [][]int
 	allButLast := regexp.MustCompile(`don't\(\).*?do\(\)`)
 	finalDont := regexp.MustCompile(`don't\(\).*`)
 	pattern := regexp.MustCompile(`mul\((\d+),(\d+)\)`)
-	partiallyEnabledLine := allButLast.ReplaceAllString(fullString, "")
+	partiallyEnabledLine := allButLast.ReplaceAllString(builder.String(), "")
 	enabledLine := finalDont.ReplaceAllString(partiallyEnabledLine, "")
 	matches := pattern.FindAllStringSubmatch(enabledLine, -1)
 	for _, match := range matches {
